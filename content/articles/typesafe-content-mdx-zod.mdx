@@ -1,0 +1,37 @@
+A markdown file with a typo in its frontmatter should fail the build, not silently render a post titled "undefined". Yet most content pipelines treat frontmatter as an untyped grab bag. Here is the pipeline I use to make content as type-safe as the code that renders it.
+
+## The problem with gray-matter alone
+
+Parsing frontmatter gives you `Record<string, unknown>`. Everything downstream — the post list, the RSS feed, the SEO tags — now depends on fields that might not exist. You find out at runtime, in production, when a post renders with a missing date.
+
+## Validate at the boundary
+
+The fix is to validate every file once, at build time, with a Zod schema:
+
+```ts
+import { z } from "zod";
+
+const frontmatterSchema = z.object({
+  title: z.string().min(1),
+  date: z.coerce.date(),
+  description: z.string().max(160),
+  draft: z.boolean().default(false),
+  tags: z.array(z.string()).default([]),
+});
+
+type Frontmatter = z.infer<typeof frontmatterSchema>;
+```
+
+Every markdown file in the content directory gets parsed and validated when the app builds. A missing title is now a build error with a file path and a line number — not a broken page discovered by a reader.
+
+## What this buys you
+
+- **Autocomplete everywhere.** The blog index, the sitemap, and the OG image generator all see a typed `Frontmatter`, not `any`.
+- **Refactoring confidence.** Rename a field and the compiler finds every usage across content and code.
+- **Drafts for free.** A validated `draft` boolean filtered at build time beats a naming convention like `_post.md` that someone will forget.
+
+## The extra mile: generated types from MDX
+
+If you use MDX, take it further: export your metadata as a typed constant from the `.mdx` file itself instead of YAML frontmatter. Then the compiler checks your content the same way it checks your components, and "the build is green" actually means the site is correct.
+
+Type safety is not about being fancy. It is about moving every possible failure from production to the build log — where it belongs.

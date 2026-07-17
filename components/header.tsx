@@ -1,15 +1,22 @@
-import "../app/globals.css";
+import Link from "next/link";
+import { site } from "@/lib/content";
 
-export default function HeaderComponent({}) {
+export default function HeaderComponent() {
     return (
         <nav>
-            <a href="home" className="nav-logo">AlbertoCaballero.dev</a>
+            <Link href="/" className="nav-logo">
+                {site.domain}
+            </Link>
             <ul className="nav-links">
-                <li><a href="work">Work</a></li>
-                <li><a href="writting">Writing</a></li>
-                <li><a href="videos">Videos</a></li>
-                <li><a href="about">About</a></li>
-                <li><a href="contact" className="cta">Get in touch</a></li>
+                <li><Link href="/#work">Work</Link></li>
+                <li><Link href="/#writing">Writing</Link></li>
+                <li><Link href="/#videos">Videos</Link></li>
+                <li><Link href="/#about">About</Link></li>
+                <li>
+                    <a href={`mailto:${site.email}`} className="cta">
+                        Get in touch
+                    </a>
+                </li>
             </ul>
         </nav>
     );

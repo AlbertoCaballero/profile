@@ -1,0 +1,29 @@
+Server rendering and CDNs have an uneasy relationship. The whole point of rendering on the server is that the response can be different for every request — and the whole point of a CDN is to serve the same response to everyone. Reconciling the two is where most performance budgets are won or lost.
+
+## The spectrum of cacheability
+
+Not every page deserves the same strategy. I think about routes in three buckets:
+
+1. **Truly static** — marketing pages, docs, blog posts. Cache aggressively at the edge, revalidate in the background.
+2. **Shared dynamic** — product listings, dashboards with data that updates every few minutes. Cache with short TTLs and stale-while-revalidate.
+3. **Private dynamic** — account pages, carts. Never cache at the shared layer; `private, no-store` and render per request.
+
+Most apps get this wrong in one direction: either everything is bucket three (origin melts, TTFB suffers) or everything is bucket one (users see other users' data — a much worse bug).
+
+## The headers that matter
+
+```
+Cache-Control: public, s-maxage=60, stale-while-revalidate=300
+```
+
+- `s-maxage` is the shared cache TTL — what the CDN respects.
+- `stale-while-revalidate` lets the edge serve the old copy while it fetches a fresh one in the background. This is the single most valuable directive for server-rendered apps: users never wait for a regeneration.
+- `Vary` is a footgun. Every header you vary on multiplies your cache key space. A stray `Vary: User-Agent` from some middleware can quietly destroy your hit ratio.
+
+## Invalidation is the hard part
+
+Caching is easy; knowing when to purge is not. My rule of thumb: prefer **time-based expiry with SWR** over event-based purging whenever the business can tolerate a minute of staleness. Event-driven invalidation (webhooks from the CMS, database triggers) is reserved for content where staleness is a correctness issue — pricing, inventory, legal copy.
+
+## Measure the hit ratio
+
+Whatever strategy you pick, instrument it. A CDN dashboard showing a 40% hit ratio on a server-rendered app usually means personalization is leaking into shared cache keys. Getting that number above 90% is the difference between an origin that idles and one that pages you at 3 AM.

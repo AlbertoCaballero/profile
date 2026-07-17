@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { DM_Serif_Display, DM_Mono, Syne } from "next/font/google";
 import "./globals.css";
 import HeaderComponent from "@/components/header";
-import IntroComponent from "@/components/intro";
+import FooterComponent from "@/components/footer";
 
 const dmSerifDisplay = DM_Serif_Display({
     subsets: ["latin"],
@@ -34,17 +34,15 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <>
-            <HeaderComponent />
-            <html
-                lang="en"
-                className={`${dmSerifDisplay.variable} ${dmMono.variable} ${syne.variable} h-full antialiased`}
-            >
-                <body className="min-h-full flex flex-col">
-                    <IntroComponent></IntroComponent>
-                    {children}
-                </body>
-            </html>
-        </>
+        <html
+            lang="en"
+            className={`${dmSerifDisplay.variable} ${dmMono.variable} ${syne.variable} h-full antialiased`}
+        >
+            <body className="min-h-full flex flex-col">
+                <HeaderComponent />
+                <main className="flex-1">{children}</main>
+                <FooterComponent />
+            </body>
+        </html>
     );
 }

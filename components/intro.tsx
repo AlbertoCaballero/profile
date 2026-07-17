@@ -1,8 +1,6 @@
-import "../app/globals.css";
-
-export default function IntroComponent({}) {
+export default function IntroComponent() {
     return (
-        <div className="hero">
+        <section className="hero" id="about">
             <div>
                 <div className="hero-index">
                     <span className="section-num">00</span> Introduction
@@ -33,6 +31,6 @@ export default function IntroComponent({}) {
                     Open to select projects
                 </div>
             </div>
-        </div>
+        </section>
     );
 }

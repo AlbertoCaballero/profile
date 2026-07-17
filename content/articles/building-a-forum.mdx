@@ -1,0 +1,38 @@
+Every developer has started a forum. Almost none have shipped one. The idea is seductively simple — posts, threads, replies — and the reality is a graveyard of half-built notification systems and moderation queues. Here is how I scoped mine so it actually went live.
+
+## The features that kill you
+
+The danger is never the happy path. It is the features that seem small:
+
+- **Notifications.** "Just email on replies" becomes digests, mute threads, per-board preferences, and deliverability debugging.
+- **Moderation.** Reports, queues, shadow bans, edit history. This is a product inside your product.
+- **Search.** Postgres full-text search is fine. Resist the urge to stand up Elasticsearch on day one.
+
+## What shipped in v1
+
+I gave myself one rule: if a feature does not help a reader find an answer, it does not ship. The first version had:
+
+- Threads with flat replies (no nested comment trees — the single best scope decision I made)
+- Markdown with server-side sanitization
+- One moderation action: hide. No queue, just a boolean and a filter
+- Email notifications for direct replies only, sent through a transactional provider
+
+That is it. The whole thing was a Postgres schema of five tables and about three weeks of evenings.
+
+## The schema is the product
+
+```sql
+CREATE TABLE threads (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  board_id uuid REFERENCES boards(id),
+  author_id uuid REFERENCES users(id),
+  title text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+```
+
+Flat replies meant no recursive queries, no closure tables, no ltree. A thread page is one indexed query. When someone inevitably asks for nested comments, the answer is a reply-to reference rendered as a quote — which is what forums actually converged on in the 90s, and it still works.
+
+## What I would skip again
+
+Reactions, badges, reputation scores, and rich profiles. Communities do not fail because they lack gamification; they fail because nobody moderates. Spend the hours there instead.

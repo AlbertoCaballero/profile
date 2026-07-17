@@ -1,0 +1,42 @@
+Vercel is the default answer for deploying Next.js, but it is not the only one. If your infrastructure already lives on Google Cloud — or you simply want predictable pricing and full control over the runtime — Cloud Run is an excellent target. This is the setup I use for every serious project.
+
+## Why leave Vercel?
+
+Nothing against Vercel; the developer experience is genuinely great. But there are real reasons to self-host:
+
+- **Cost at scale.** Per-request pricing and bandwidth fees add up quickly once traffic grows.
+- **Compliance.** Some clients require workloads to stay inside their own GCP organization.
+- **Control.** You decide the region, the instance sizes, the concurrency, and the network path.
+
+## Containerize the app
+
+Next.js ships a standalone output mode that produces a minimal production server — no `node_modules` required at runtime:
+
+```js
+// next.config.js
+module.exports = {
+  output: "standalone",
+};
+```
+
+The Dockerfile is a standard three-stage build: install dependencies, build, then copy only the standalone output into a slim runtime image. The result is an image around 150 MB that boots in under a second.
+
+## Deploy to Cloud Run
+
+```bash
+gcloud run deploy web \
+  --image gcr.io/my-project/web \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --concurrency 80
+```
+
+Two settings matter here. **Concurrency** at 80 keeps container counts low because Next.js handles concurrent requests well. And always set a **minimum of one instance** for user-facing traffic — cold starts on a content site are a tax you pay on every cache miss.
+
+## Put a CDN in front
+
+Cloud Run is regional, so the last step is a global external load balancer with Cloud CDN enabled. Static assets from `/_next/static` are cached at the edge automatically thanks to their immutable cache headers, and you can opt server-rendered pages into edge caching with careful `Cache-Control` headers — which is exactly what the next article is about.
+
+## The bill
+
+For a site doing a few million requests a month, this setup typically lands between $15 and $40 on GCP — and you get deploy previews via Cloud Run revisions, traffic splitting for canary releases, and no per-seat pricing. The craft of shipping things includes knowing where your software actually runs.
