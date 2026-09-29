@@ -8,7 +8,7 @@ export const site = {
         github: "https://github.com/albertocaballero",
         linkedin: "https://www.linkedin.com/in/albertocaballero",
         twitter: "https://x.com/albertocaballero",
-        youtube: "https://www.youtube.com/@albertocaballero",
+        youtube: "https://www.youtube.com/@alberto.caballero",
     },
 } as const;
 
@@ -24,89 +24,39 @@ export type Project = {
 export const projects: Project[] = [
     {
         year: "2025",
-        type: "Infrastructure",
-        title: "Zero-downtime deploy pipeline",
+        type: "Analytics",
+        title: "Tag Tracer",
         description:
-            "Designed a blue-green deployment system on GCP Cloud Run with automated rollback and canary traffic splitting.",
-        stack: ["GCP", "Cloud Run", "Terraform", "Go"],
-        href: site.socials.github,
+            "Automated marketing and analytics tag tracing tool. Captures network calls from a headless browser and validates them against configurable rules defined in Excel or YAML.",
+        stack: ["Python"],
+        href: "https://github.com/AlbertoCaballero/tag-tracer",
     },
     {
-        year: "2024",
-        type: "Web app",
-        title: "Real-time analytics dashboard",
-        description:
-            "Event-driven data pipeline serving live metrics to 10k concurrent users with sub-100ms latency.",
-        stack: ["Next.js", "Postgres", "Pub/Sub"],
-        href: site.socials.github,
+        year: "2026",
+        type: "Android",
+        title: "Kanji Time",
+        description: "Android widget for kanji learning.",
+        stack: ["Kotlin"],
+        href: "https://github.com/AlbertoCaballero/kanji-time",
     },
     {
-        year: "2024",
+        year: "2020",
         type: "Open source",
-        title: "MDX content engine",
+        title: "JavaScript Algorithms",
         description:
-            "Type-safe content pipeline with frontmatter validation, rehype plugins, and incremental builds.",
-        stack: ["TypeScript", "MDX", "Zod"],
-        href: site.socials.github,
+            "A collection of simple JavaScript algorithms and concepts.",
+        stack: ["TypeScript"],
+        href: "https://github.com/AlbertoCaballero/javascript-algorithms",
     },
     {
-        year: "2023",
-        type: "API",
-        title: "Edge-cached API gateway",
-        description:
-            "Request coalescing and stale-while-revalidate caching layer reducing origin load by 80%.",
-        stack: ["Cloudflare Workers", "Hono", "Redis"],
-        href: site.socials.github,
+        year: "2020",
+        type: "Learning",
+        title: "Rust Algorithms",
+        description: "A simple project to try out Rust concepts and algorithms.",
+        stack: ["Rust"],
+        href: "https://github.com/AlbertoCaballero/rust-algorithms",
     },
 ];
-
-export type Article = {
-    slug: string;
-    title: string;
-    /** ISO date, e.g. "2026-04-14" */
-    date: string;
-    readTime: number;
-    description: string;
-};
-
-export const articles: Article[] = [
-    {
-        slug: "deploy-nextjs-gcp",
-        title: "How I deploy Next.js to GCP without Vercel",
-        date: "2026-04-14",
-        readTime: 8,
-        description:
-            "Containerize a Next.js app, push it to Cloud Run, and put a global CDN in front — no Vercel involved.",
-    },
-    {
-        slug: "cdn-distribution-strategies",
-        title: "CDN distribution strategies for server-rendered apps",
-        date: "2026-03-22",
-        readTime: 11,
-        description:
-            "Where to draw the line between static and dynamic, and how to cache server-rendered pages safely at the edge.",
-    },
-    {
-        slug: "building-a-forum",
-        title: "Building a forum without losing your mind",
-        date: "2026-02-18",
-        readTime: 6,
-        description:
-            "Threads, moderation, and notifications are where side projects go to die. Here is the scope that shipped.",
-    },
-    {
-        slug: "typesafe-content-mdx-zod",
-        title: "Type-safe content with MDX and Zod",
-        date: "2026-01-30",
-        readTime: 9,
-        description:
-            "Validate frontmatter at build time so a typo in a markdown file can never take down the site.",
-    },
-];
-
-export function getArticle(slug: string): Article | undefined {
-    return articles.find((article) => article.slug === slug);
-}
 
 export function formatDate(isoDate: string): string {
     return new Date(isoDate).toLocaleDateString("en-US", {

@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AlbertoCaballero.dev — Personal Portfolio
 
-## Getting Started
+Personal portfolio for [albertocaballero.dev](https://albertocaballero.dev): intro, selected work, writing, and videos — with full article pages, RSS, and a sitemap.
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Next.js 16** (App Router) · **React 19** · **TypeScript**
+- **Tailwind CSS v4** with design tokens in `app/globals.css` (`:root` CSS variables)
+- **MDX** via `@next/mdx` for article content
+- **gray-matter + Zod** for typed frontmatter validation at build time
+
+## Project Structure
+
+```
+app/
+  layout.tsx          Root layout — fonts, metadata (OG/Twitter, metadataBase)
+  page.tsx            Home: Intro, Work, Writing, Videos
+  writing/            Article index + [slug] article pages
+  sitemap.ts          Dynamic sitemap (/) and /writing + article slugs)
+  opengraph-image.tsx Generated OG/Twitter share card (next/og)
+  rss.xml/route.ts    RSS feed
+components/           Header, Footer, Intro, Work, Writing, Videos, SectionHeader
+content/articles/     Article MDX files — metadata lives in YAML frontmatter
+lib/
+  content.ts          Site config, projects, videos (client-safe — no Node APIs)
+  articles.ts         Article loader: parses + validates frontmatter (Node-only)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Commands
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run dev      # Start the dev server
+npm run build    # Production build (type-checks + validates article frontmatter)
+npm run start    # Serve the production build
+npm run lint     # ESLint
+npx tsc --noEmit # Type check without emitting
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Writing an Article
 
-## Learn More
+1. Create `content/articles/<slug>.mdx` with YAML frontmatter:
 
-To learn more about Next.js, take a look at the following resources:
+   ```mdx
+   ---
+   title: "Article title"
+   date: "2026-04-14"        # ISO date, quoted (YYYY-MM-DD)
+   readTime: 8               # integer minutes
+   description: "One-liner used in listings, RSS, and meta tags."
+   ---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   Article body…
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. That's it — the listing page, article pages, RSS feed, and sitemap pick it up automatically.
 
-## Deploy on Vercel
+Frontmatter is validated by Zod at build time: a missing or malformed field fails the build with the offending file path, and an `.mdx` file missing from the content directory renders a 404 rather than crashing. In dev, restart the dev server after adding a new article (the article list is read once at startup).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Troubleshooting
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **`tsc --noEmit` reports stale route-type errors:** Delete `.next` (generated route types are regenerated on the next `npm run dev`/`build`). The generated `.next/types` globs in `tsconfig.json` are intentionally kept — Next.js 16 manages them to avoid config churn between dev and build.

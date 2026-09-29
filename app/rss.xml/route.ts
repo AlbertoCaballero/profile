@@ -1,4 +1,5 @@
-import { articles, site } from "@/lib/content";
+import { articles } from "@/lib/articles";
+import { site } from "@/lib/content";
 
 export const dynamic = "force-static";
 

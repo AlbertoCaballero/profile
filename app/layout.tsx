@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { DM_Serif_Display, DM_Mono, Syne } from "next/font/google";
 import "./globals.css";
-import HeaderComponent from "@/components/header";
-import FooterComponent from "@/components/footer";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
+import { site } from "@/lib/content";
 
 const dmSerifDisplay = DM_Serif_Display({
     subsets: ["latin"],
@@ -24,8 +25,30 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-    title: "AlbertoCaballero",
+    metadataBase: new URL(site.url),
+    title: `${site.name} — Software engineer & builder`,
     description: "Software engineer & builder.",
+    openGraph: {
+        type: "website",
+        url: site.url,
+        siteName: site.domain,
+        title: `${site.name} — Software engineer & builder`,
+        description: "Software engineer & builder.",
+        images: [
+            {
+                url: "/opengraph-image",
+                width: 1200,
+                height: 630,
+                alt: `${site.name} — Software engineer & builder`,
+            },
+        ],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: `${site.name} — Software engineer & builder`,
+        description: "Software engineer & builder.",
+        images: ["/opengraph-image"],
+    },
 };
 
 export default function RootLayout({
@@ -39,9 +62,9 @@ export default function RootLayout({
             className={`${dmSerifDisplay.variable} ${dmMono.variable} ${syne.variable} h-full antialiased`}
         >
             <body className="min-h-full flex flex-col">
-                <HeaderComponent />
+                <Header />
                 <main className="flex-1">{children}</main>
-                <FooterComponent />
+                <Footer />
             </body>
         </html>
     );

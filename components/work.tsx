@@ -1,10 +1,10 @@
 import { projects, site } from "@/lib/content";
-import SectionHeaderComponent from "@/components/section-header";
+import SectionHeader from "@/components/section-header";
 
-export default function WorkComponent() {
+export default function Work() {
     return (
         <section className="section" id="work">
-            <SectionHeaderComponent
+            <SectionHeader
                 num="01"
                 label="Selected work"
                 actionText="All projects"

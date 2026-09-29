@@ -1,6 +1,6 @@
 import { site } from "@/lib/content";
 
-export default function FooterComponent() {
+export default function Footer() {
     return (
         <footer className="footer">
             <span className="footer-copy">

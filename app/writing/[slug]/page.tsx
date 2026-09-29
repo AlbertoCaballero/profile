@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { articles, formatDate, getArticle, site } from "@/lib/content";
+import { formatDate, site } from "@/lib/content";
+import { articles, getArticle } from "@/lib/articles";
+import type { ComponentType } from "react";
 
 export function generateStaticParams() {
     return articles.map((article) => ({ slug: article.slug }));
@@ -38,9 +40,17 @@ export default async function ArticlePage({
         notFound();
     }
 
-    const { default: Content } = await import(
-        `@/content/articles/${article.slug}.mdx`
-    );
+    let Content: ComponentType;
+
+    try {
+        ({ default: Content } = await import(
+            `@/content/articles/${article.slug}.mdx`
+        ));
+    } catch {
+        // Missing or misspelled MDX file relative to the slug list — bail
+        // out with a 404 instead of crashing the route with a module error.
+        notFound();
+    }
 
     return (
         <>

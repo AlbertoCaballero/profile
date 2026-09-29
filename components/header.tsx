@@ -11,7 +11,7 @@ const links = [
     { href: "/#about", label: "About" },
 ];
 
-export default function HeaderComponent() {
+export default function Header() {
     const [open, setOpen] = useState(false);
 
     return (

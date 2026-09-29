@@ -1,10 +1,10 @@
 import { site, videos } from "@/lib/content";
-import SectionHeaderComponent from "@/components/section-header";
+import SectionHeader from "@/components/section-header";
 
-export default function VideosComponent() {
+export default function Videos() {
     return (
         <section className="section" id="videos">
-            <SectionHeaderComponent
+            <SectionHeader
                 num="03"
                 label="Videos"
                 actionText="All videos"

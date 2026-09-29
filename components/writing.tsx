@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { articles, formatDate } from "@/lib/content";
-import SectionHeaderComponent from "@/components/section-header";
+import { articles } from "@/lib/articles";
+import { formatDate } from "@/lib/content";
+import SectionHeader from "@/components/section-header";
 
-export default function WritingComponent() {
+export default function Writing() {
     return (
         <section className="section" id="writing">
-            <SectionHeaderComponent
+            <SectionHeader
                 num="02"
                 label="Writing"
                 actionText="All articles"

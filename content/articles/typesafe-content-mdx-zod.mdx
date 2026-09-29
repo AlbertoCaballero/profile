@@ -1,3 +1,10 @@
+---
+title: "Type-safe content with MDX and Zod"
+date: "2026-01-30"
+readTime: 9
+description: "Validate frontmatter at build time so a typo in a markdown file can never take down the site."
+---
+
 A markdown file with a typo in its frontmatter should fail the build, not silently render a post titled "undefined". Yet most content pipelines treat frontmatter as an untyped grab bag. Here is the pipeline I use to make content as type-safe as the code that renders it.
 
 ## The problem with gray-matter alone

@@ -9,7 +9,7 @@ type SectionHeaderProps = {
     external?: boolean;
 };
 
-export default function SectionHeaderComponent({
+export default function SectionHeader({
     num,
     label,
     actionText,

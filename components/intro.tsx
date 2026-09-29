@@ -1,4 +1,4 @@
-export default function IntroComponent() {
+export default function Intro() {
     return (
         <section className="hero" id="about">
             <div>

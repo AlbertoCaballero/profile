@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { articles, formatDate, site } from "@/lib/content";
-import SectionHeaderComponent from "@/components/section-header";
+import { formatDate, site } from "@/lib/content";
+import { articles } from "@/lib/articles";
+import SectionHeader from "@/components/section-header";
 
 export const metadata: Metadata = {
     title: `Writing — ${site.name}`,
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 export default function WritingPage() {
     return (
         <section className="section">
-            <SectionHeaderComponent
+            <SectionHeader
                 num="02"
                 label="Writing"
                 actionText="Back home"
